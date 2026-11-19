@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hospital Clinical Ops &amp; BPJS E-Klaim Analytics | Daffa Ahmadhan K.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root[data-theme="light"] {
+      --bg: #f8fafc; --surface: #ffffff; --surface-2: #f1f5f9; --border: #e2e8f0;
+      --text: #0f172a; --body: #334155; --muted: #64748b; --accent: #2563eb; --accent-soft: rgba(37, 99, 235, 0.12);
+      --green: #059669; --green-bg: #ecfdf5; --red: #dc2626; --amber: #b45309; --grid: rgba(15, 23, 42, 0.06); --code-bg: #f8fafc;
+      --shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+    }
+    :root[data-theme="dark"] {
+      --bg: #0f172a; --surface: #1e293b; --surface-2: #0f172a; --border: #334155;
+      --text: #f8fafc; --body: #cbd5e1; --muted: #94a3b8; --accent: #60a5fa; --accent-soft: rgba(96, 165, 250, 0.14);
+      --green: #34d399; --green-bg: rgba(52, 211, 153, 0.14); --red: #f87171; --amber: #fbbf24; --grid: rgba(255, 255, 255, 0.06); --code-bg: #0b1120;
+      --shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--body); font-family: 'Plus Jakarta Sans', system-ui, sans-serif; line-height: 1.6; transition: background 0.2s, color 0.2s; }
+    h1, h2, h3 { color: var(--text); }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .container { max-width: 1180px; margin: 0 auto; padding: 28px 20px 64px; }
+    .topbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding-bottom: 20px; border-bottom: 1px solid var(--border); margin-bottom: 28px; }
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 13px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: 13px; font-weight: 600; text-decoration: none; cursor: pointer; box-shadow: var(--shadow); }
+    .btn:hover { border-color: var(--accent); color: var(--accent); }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 22px; box-shadow: var(--shadow); }
+    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 18px; margin-bottom: 24px; }
+    .label { font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 700; }
+    .kpi-val { font-size: 30px; font-weight: 800; color: var(--text); margin: 6px 0 2px; }
+    .note-box { border-left: 4px solid var(--accent); background: var(--surface); border-top: 1px solid var(--border); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 18px 22px; border-radius: 0 10px 10px 0; margin-bottom: 24px; box-shadow: var(--shadow); }
+    .sim-box { background: var(--surface); border: 2px solid var(--accent); border-radius: 12px; padding: 22px; margin-bottom: 24px; box-shadow: var(--shadow); }
+    .sim-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 22px; align-items: center; }
+    @media (max-width: 780px) { .sim-grid { grid-template-columns: 1fr; } }
+    input[type="range"] { width: 100%; accent-color: var(--accent); cursor: pointer; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { text-align: left; color: var(--muted); border-bottom: 1px solid var(--border); padding: 9px 6px; font-weight: 600; }
+    td { padding: 10px 6px; border-bottom: 1px solid var(--border); color: var(--text); }
+    pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px; padding: 14px; overflow-x: auto; font-size: 12px; color: var(--text); margin: 12px 0 0; }
+    details summary { cursor: pointer; font-weight: 700; font-size: 13.5px; color: var(--accent); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+        <a class="btn" href="../index.html#projects">&larr; Back to Portfolio</a>
+        <a class="btn" href="https://github.com/DaffaAhmdhan/hospital-clinical-ops-analytics" target="_blank" rel="noopener noreferrer">GitHub Repo &nearr;</a>
+      </div>
+      <div style="display:flex; gap:10px; align-items:center;">
+        <span class="mono" style="font-size:12.5px; color:var(--muted);">8,400 clinical visits &bull; SIMRS &amp; INA-CBG</span>
+        <button class="btn" id="themeToggle" type="button">Dark Mode</button>
+      </div>
+    </div>
+
+    <header style="margin-bottom:24px;">
+      <div class="label" style="color:var(--accent);">Flagship Case Study &bull; Healthcare Operations &amp; BPJS E-Klaim BI</div>
+      <h1 style="font-size:30px; margin:6px 0 8px; letter-spacing:-0.02em; font-weight:800;">Hospital Clinical Queue, Biometric Check-In &amp; BPJS E-Klaim Analytics</h1>
+      <p style="color:var(--body); max-width:850px; margin:0; font-size:15px;">
+        Built around real hospital IT systems I work with daily (SIMRS, BPJS Fingerprint Biometrics, DICOM/PACS, and INA-CBG E-Klaim): analyzing 8,400 patient visits across 6 departments to cut outpatient waiting time and recover stalled BPJS claims.
+      </p>
+    </header>
+
+    <div class="note-box">
+      <div class="label" style="color:var(--accent); margin-bottom:6px;">Key Takeaway (In Plain English)</div>
+      <p style="margin:0; font-size:14.5px;">
+        <strong>What creates the morning polyclinic bottleneck—and how do we fix it?</strong> <strong>59.7% of all hospital visits</strong> (5,014 out of 8,400) arrive between 07:00 and 10:00 AM, pushing Cardiology (78.6m) and Internal Medicine (75.3m) past the 60-minute Ministry outpatient SLA. Yet patients checking in via <strong>BPJS Fingerprint Biometric Kiosks</strong> wait <strong>25.66 minutes less</strong> (46.28m, 73.3% SLA) than Manual Counter patients (71.94m, 26.06% SLA). Meanwhile, <strong>Rp 1.10B (13.14%)</strong> of BPJS claims sit in <em>Pending / Revision</em> for nearly 10 days due to incomplete coding or DICOM attachments.
+      </p>
+    </div>
+
+    <!-- KPI Cards -->
+    <section class="kpi-grid">
+      <div class="card">
+        <div class="label">Visits &amp; Claim Volume</div>
+        <div class="kpi-val mono">8,400</div>
+        <div style="font-size:13px; color:var(--muted);">Rp 11.28B total billing (6 months)</div>
+      </div>
+      <div class="card">
+        <div class="label">Biometric Check-In Speed</div>
+        <div class="kpi-val mono" style="color:var(--green);">-25.7 min</div>
+        <div style="font-size:13px; color:var(--muted);">46.3m vs 71.9m Manual Counter</div>
+      </div>
+      <div class="card">
+        <div class="label">BPJS First-Pass Approval</div>
+        <div class="kpi-val mono" style="color:var(--accent);">81.87%</div>
+        <div style="font-size:13px; color:var(--muted);">4,959 claims cleared in 3.14 days</div>
+      </div>
+      <div class="card">
+        <div class="label">BPJS Revenue in Revision</div>
+        <div class="kpi-val mono" style="color:var(--red);">Rp 1.10B</div>
+        <div style="font-size:13px; color:var(--muted);">796 claims stuck avg 9.83 days</div>
+      </div>
+    </section>
+
+    <!-- Interactive What-If Queue Simulator -->
+    <section class="sim-box">
+      <div class="label" style="color:var(--accent); margin-bottom:6px;">Interactive What-If Operations Simulator</div>
+      <h2 style="font-size:19px; margin:0 0 14px;">Simulate Biometric Kiosk Rollout &amp; Morning Peak Triage</h2>
+      <div class="sim-grid">
+        <div style="display:flex; flex-direction:column; gap:16px;">
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:13.5px; font-weight:600; margin-bottom:6px;">
+              <span>Shift Manual Counter Check-Ins to BPJS Biometric Kiosks:</span>
+              <span class="mono" style="color:var(--accent);" id="bioVal">50%</span>
+            </div>
+            <input type="range" id="bioSlider" min="0" max="85" value="50" oninput="updateSimulator()" />
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:13.5px; font-weight:600; margin-bottom:6px;">
+              <span>Add Morning Nurse / Triage Capacity (07:00–10:00 Peak):</span>
+              <span class="mono" style="color:var(--accent);" id="staffVal">+15%</span>
+            </div>
+            <input type="range" id="staffSlider" min="0" max="30" value="15" oninput="updateSimulator()" />
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div style="background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:14px;">
+            <div class="label">Projected Avg Wait</div>
+            <div class="kpi-val mono" id="simWait" style="font-size:26px; color:var(--green);">49.8 min</div>
+            <div style="font-size:12px; color:var(--muted);">Baseline: 60.95 min</div>
+          </div>
+          <div style="background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:14px;">
+            <div class="label">Projected &le;60m SLA</div>
+            <div class="kpi-val mono" id="simSla" style="font-size:26px; color:var(--accent);">68.4%</div>
+            <div style="font-size:12px; color:var(--muted);">Baseline: 46.29%</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Charts -->
+    <section class="grid-2">
+      <div class="card">
+        <h2 style="font-size:16px; margin:0 0 12px;">Average Wait Time by Department vs. 60-Min SLA</h2>
+        <canvas id="deptChart" height="160"></canvas>
+      </div>
+      <div class="card">
+        <h2 style="font-size:16px; margin:0 0 12px;">Hourly Patient Arrival Wave (06:00–17:00)</h2>
+        <canvas id="hourChart" height="160"></canvas>
+      </div>
+    </section>
+
+    <section class="grid-2">
+      <div class="card">
+        <h2 style="font-size:16px; margin:0 0 12px;">BPJS INA-CBG E-Klaim Status &amp; Financial Exposure</h2>
+        <table>
+          <thead>
+            <tr class="mono">
+              <th>Claim Status</th><th>Claims</th><th>Share</th><th>Avg Days</th><th>Total Value (IDR)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Approved First-Pass</strong></td><td class="mono">4,959</td><td class="mono" style="color:var(--green); font-weight:700;">81.87%</td><td class="mono">3.14d</td><td class="mono">Rp 6.66B</td></tr>
+            <tr><td><strong>Pending / Revision</strong></td><td class="mono">796</td><td class="mono" style="color:var(--red); font-weight:700;">13.14%</td><td class="mono">9.83d</td><td class="mono">Rp 1.10B</td></tr>
+            <tr><td><strong>Delayed &gt;7d</strong></td><td class="mono">302</td><td class="mono" style="color:var(--amber); font-weight:700;">4.99%</td><td class="mono">9.31d</td><td class="mono">Rp 368.8M</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h2 style="font-size:16px; margin:0 0 12px;">Check-In Method Impact (SQL Verified)</h2>
+        <table>
+          <thead>
+            <tr class="mono">
+              <th>Check-In Method</th><th>Visits</th><th>Avg Wait</th><th>&le;60m SLA</th><th>Avg CSAT</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>BPJS Fingerprint Biometric</strong></td><td class="mono">3,596</td><td class="mono" style="color:var(--green); font-weight:700;">46.28m</td><td class="mono" style="color:var(--green); font-weight:700;">73.30%</td><td class="mono">3.70 / 5</td></tr>
+            <tr><td><strong>Manual Counter</strong></td><td class="mono">4,804</td><td class="mono" style="color:var(--red); font-weight:700;">71.94m</td><td class="mono" style="color:var(--red); font-weight:700;">26.06%</td><td class="mono">2.79 / 5</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card">
+      <details open>
+        <summary>SQL Clinical SLA &amp; INA-CBG E-Klaim Queries (from sql/clinical_ops_queries.sql)</summary>
+        <pre class="mono">-- Check-In Biometric vs Manual Counter Impact
+SELECT
+    check_in_method,
+    COUNT(*) AS visits,
+    ROUND(AVG(wait_time_mins), 2) AS avg_wait_mins,
+    ROUND(100.0 * SUM(CASE WHEN wait_time_mins &lt;= 60 THEN 1 ELSE 0 END) / COUNT(*), 2) AS sla_60m_pct,
+    ROUND(AVG(patient_csat), 2) AS avg_csat
+FROM patient_visits
+GROUP BY check_in_method;
+
+-- BPJS Kesehatan INA-CBG Claim Revenue at Risk
+SELECT
+    claim_status,
+    COUNT(*) AS claim_count,
+    ROUND(AVG(claim_submission_days), 2) AS avg_turnaround_days,
+    SUM(claim_amount_idr) AS claim_value_idr
+FROM patient_visits
+WHERE payer_type = 'BPJS Kesehatan'
+GROUP BY claim_status
+ORDER BY claim_count DESC;</pre>
+      </details>
+    </section>
+  </div>
+
+  <script>
+    const root = document.documentElement;
+    const savedTheme = localStorage.getItem('daffa_theme_v2') || 'light';
+    root.setAttribute('data-theme', savedTheme);
+    const toggleBtn = document.getElementById('themeToggle');
+    function updateToggleLabel() {
+      toggleBtn.textContent = root.getAttribute('data-theme') === 'light' ? 'Dark Mode' : 'Light Mode';
+    }
+    updateToggleLabel();
+
+    const depts = [
+      {d: "Cardiology", w: 78.62}, {d: "Internal Med", w: 75.32},
+      {d: "Orthopedics", w: 66.12}, {d: "Pediatrics", w: 57.79},
+      {d: "Radiology / DICOM", w: 50.21}, {d: "Emergency / IGD", w: 23.93}
+    ];
+    const hours = [
+      {h:"06",v:325,w:53.01},{h:"07",v:986,w:66.25},{h:"08",v:1536,w:67.55},{h:"09",v:1398,w:66.96},
+      {h:"10",v:1094,w:66.88},{h:"11",v:782,w:51.92},{h:"12",v:498,w:51.09},{h:"13",v:559,w:52.82},
+      {h:"14",v:544,w:51.91},{h:"15",v:308,w:51.90},{h:"16",v:189,w:49.55},{h:"17",v:181,w:53.95}
+    ];
+
+    function updateSimulator() {
+      const bioShift = Number(document.getElementById('bioSlider').value);
+      const staffBoost = Number(document.getElementById('staffSlider').value);
+      document.getElementById('bioVal').textContent = bioShift + '%';
+      document.getElementById('staffVal').textContent = '+' + staffBoost + '%';
+
+      // Baseline: 4804 manual (71.94m, 26.06% SLA), 3596 biometric (46.28m, 73.30% SLA)
+      const shiftedVisits = 4804 * (bioShift / 100.0);
+      const remManual = 4804 - shiftedVisits;
+      const newBio = 3596 + shiftedVisits;
+
+      let wait = ((remManual * 71.94) + (newBio * 46.28)) / 8400.0;
+      // Morning peak reduction (~59.7% of visits arrive 07-10)
+      wait = wait * (1.0 - (0.597 * (staffBoost / 100.0) * 0.55));
+      let sla = ((remManual * 26.06) + (newBio * 73.30)) / 8400.0 + (staffBoost * 0.42);
+      sla = Math.min(94.0, sla);
+
+      document.getElementById('simWait').textContent = wait.toFixed(1) + ' min';
+      document.getElementById('simSla').textContent = sla.toFixed(1) + '%';
+    }
+
+    let c1, c2;
+    function cssVar(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+
+    function renderCharts() {
+      const muted = cssVar('--muted'), grid = cssVar('--grid'), accent = cssVar('--accent'), green = cssVar('--green'), red = cssVar('--red'), text = cssVar('--text');
+      if (c1) c1.destroy(); if (c2) c2.destroy();
+
+      c1 = new Chart(document.getElementById("deptChart"), {
+        type: "bar",
+        data: {
+          labels: depts.map(x => x.d),
+          datasets: [{
+            label: "Avg Wait (mins)",
+            data: depts.map(x => x.w),
+            backgroundColor: depts.map(x => x.w > 60 ? red : green)
+          }]
+        },
+        options: {
+          indexAxis: "y",
+          scales: {
+            x: { beginAtZero: true, max: 90, grid: { color: grid }, ticks: { color: muted } },
+            y: { ticks: { color: text } }
+          },
+          plugins: { legend: { display: false } }
+        }
+      });
+
+      c2 = new Chart(document.getElementById("hourChart"), {
+        type: "bar",
+        data: {
+          labels: hours.map(x => x.h + ":00"),
+          datasets: [
+            { label: "Patient Arrivals", data: hours.map(x => x.v), backgroundColor: cssVar('--accent-soft'), borderColor: accent, borderWidth: 1, yAxisID: "y" },
+            { type: "line", label: "Avg Wait (min)", data: hours.map(x => x.w), borderColor: red, backgroundColor: red, yAxisID: "y1", tension: 0.25 }
+          ]
+        },
+        options: {
+          scales: {
+            y: { beginAtZero: true, grid: { color: grid }, ticks: { color: muted } },
+            y1: { position: "right", min: 40, max: 75, grid: { display: false }, ticks: { color: red } },
+            x: { ticks: { color: muted } }
+          },
+          plugins: { legend: { labels: { color: text } } }
+        }
+      });
+    }
+
+    toggleBtn.addEventListener('click', () => {
+      const next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+      root.setAttribute('data-theme', next);
+      localStorage.setItem('daffa_theme_v2', next);
+      updateToggleLabel();
+      renderCharts();
+    });
+
+    updateSimulator();
+    renderCharts();
+  </script>
+</body>
+</html>

@@ -1,0 +1,154 @@
+{
+  "executive": {
+    "total_visits": 8400,
+    "avg_wait_mins": 60.95,
+    "sla_60m_pct": 46.29,
+    "avg_csat": 3.18,
+    "total_claim_idr": 11281979000
+  },
+  "by_department": [
+    {
+      "department": "Cardiology",
+      "visits": 1320,
+      "avg_wait_mins": 78.62,
+      "sla_60m_pct": 16.82,
+      "avg_csat": 2.6
+    },
+    {
+      "department": "Internal Medicine",
+      "visits": 2076,
+      "avg_wait_mins": 75.32,
+      "sla_60m_pct": 22.45,
+      "avg_csat": 2.67
+    },
+    {
+      "department": "Orthopedics",
+      "visits": 1222,
+      "avg_wait_mins": 66.12,
+      "sla_60m_pct": 39.2,
+      "avg_csat": 2.97
+    },
+    {
+      "department": "Pediatrics",
+      "visits": 1473,
+      "avg_wait_mins": 57.79,
+      "sla_60m_pct": 54.18,
+      "avg_csat": 3.32
+    },
+    {
+      "department": "Radiology / DICOM",
+      "visits": 1168,
+      "avg_wait_mins": 50.21,
+      "sla_60m_pct": 66.95,
+      "avg_csat": 3.6
+    },
+    {
+      "department": "Emergency / IGD",
+      "visits": 1141,
+      "avg_wait_mins": 23.93,
+      "sla_60m_pct": 100.0,
+      "avg_csat": 4.41
+    }
+  ],
+  "by_checkin": [
+    {
+      "check_in_method": "BPJS Fingerprint Biometric",
+      "visits": 3596,
+      "avg_wait_mins": 46.28,
+      "sla_60m_pct": 73.3,
+      "avg_csat": 3.7
+    },
+    {
+      "check_in_method": "Manual Counter",
+      "visits": 4804,
+      "avg_wait_mins": 71.94,
+      "sla_60m_pct": 26.06,
+      "avg_csat": 2.79
+    }
+  ],
+  "bpjs_claims": [
+    {
+      "claim_status": "Approved First-Pass",
+      "claim_count": 4959,
+      "pct_of_bpjs": 81.87,
+      "avg_turnaround_days": 3.14,
+      "claim_value_idr": 6664003000
+    },
+    {
+      "claim_status": "Pending / Revision",
+      "claim_count": 796,
+      "pct_of_bpjs": 13.14,
+      "avg_turnaround_days": 9.83,
+      "claim_value_idr": 1103527000
+    },
+    {
+      "claim_status": "Delayed >7d",
+      "claim_count": 302,
+      "pct_of_bpjs": 4.99,
+      "avg_turnaround_days": 9.31,
+      "claim_value_idr": 368821000
+    }
+  ],
+  "hourly_wave": [
+    {
+      "arrival_hour": 6,
+      "total_visits": 325,
+      "avg_wait_mins": 53.01
+    },
+    {
+      "arrival_hour": 7,
+      "total_visits": 986,
+      "avg_wait_mins": 66.25
+    },
+    {
+      "arrival_hour": 8,
+      "total_visits": 1536,
+      "avg_wait_mins": 67.55
+    },
+    {
+      "arrival_hour": 9,
+      "total_visits": 1398,
+      "avg_wait_mins": 66.96
+    },
+    {
+      "arrival_hour": 10,
+      "total_visits": 1094,
+      "avg_wait_mins": 66.88
+    },
+    {
+      "arrival_hour": 11,
+      "total_visits": 782,
+      "avg_wait_mins": 51.92
+    },
+    {
+      "arrival_hour": 12,
+      "total_visits": 498,
+      "avg_wait_mins": 51.09
+    },
+    {
+      "arrival_hour": 13,
+      "total_visits": 559,
+      "avg_wait_mins": 52.82
+    },
+    {
+      "arrival_hour": 14,
+      "total_visits": 544,
+      "avg_wait_mins": 51.91
+    },
+    {
+      "arrival_hour": 15,
+      "total_visits": 308,
+      "avg_wait_mins": 51.9
+    },
+    {
+      "arrival_hour": 16,
+      "total_visits": 189,
+      "avg_wait_mins": 49.55
+    },
+    {
+      "arrival_hour": 17,
+      "total_visits": 181,
+      "avg_wait_mins": 53.95
+    }
+  ]
+}
